@@ -1,0 +1,7 @@
+{
+  "Region": "EastUS",
+  "DotnetAgentVMPassword": "[password]",
+  "AzureResourceGroup": "[resource-group]",
+  "DotnetAgentVMUsername": "[username]"
+  }
+  

@@ -1,0 +1,111 @@
+@page
+@model SecondChanceParts.Web.Pages.Cart.DetailsModel
+
+@{
+    ViewData["Title"] = "Details";
+}
+
+<h1>Shopping Cart</h1>
+
+<div>
+    <h4>Welcome  @Html.DisplayFor(model => model.ShoppingCart.Username) thank you for being a @Html.DisplayFor(model => model.ShoppingCart.UserStatus) customer!</h4>
+    <hr />
+    <dl class="row">
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.ShoppingCart.CartStatus)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.ShoppingCart.CartStatus)
+        </dd>
+        <dt class="col-sm-2">
+            Cart Total
+        </dt>
+        <dd class="col-sm-10">
+            @Model.ShoppingCartItems.Sum(i => (i.Part.UnitCost * i.ItemCount)).ToString("0.00")
+        </dd>
+    </dl>
+</div>
+<div>
+ <h4>Add Part to Shopping Cart</h4>
+  <form method="post" asp-page-handler="AddToCart" >
+      <input type="hidden" asp-for="NewShoppingCartItem.ShoppingCartId" />
+      <table class="table">
+          <tr>
+              <td>
+                   <div class="form-group">
+                    <label class="control-label">Part</label><br>
+                    <select asp-for="NewShoppingCartItem.PartId" asp-items="@Model.PartsList"></select>
+                </div>
+              </td>
+              <td>
+            <div class="form-group">
+                    <label class="control-label">Units</label>
+                    <input asp-for="NewShoppingCartItem.ItemCount" class="form-control" />
+                </div>
+              </td>
+              <td>
+                  <div class="form-group" style="padding-top:30px">
+                     <input type="submit" value="Add To Cart" class="btn btn-primary" />
+                </div>
+              </td>
+          </tr>
+      </table>
+</form>
+
+<div>
+    <h2>Shopping Cart Items</h2>
+    <table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.ShoppingCartItems[0].ItemId)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.ShoppingCartItems[0].ItemCount)
+            </th>
+            <th>
+               Part
+            </th>
+            <th>
+                
+            </th>
+            <th>Total</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model.ShoppingCartItems) {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.ItemId)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.ItemCount)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Part.Name)
+                </td>
+                <td>@((item.Part.UnitCost * item.ItemCount).ToString("0.00"))</td>
+                <td>
+                    <a asp-page="../CartItems/Delete" asp-route-id="@item.ItemId">Delete</a>
+                </td>
+            </tr>
+        }
+        </tbody>
+        <tr>
+            <td></td>
+            <td></td>
+            <td style="align:right">Total:</td>
+            <td>@Model.ShoppingCartItems.Sum(i => (i.Part.UnitCost * i.ItemCount)).ToString("0.00")</td>
+            <td> <form method="post">
+                     <input type="hidden" asp-for="ShoppingCart.CartId" />
+                    <input type="submit" asp-page-handler="Checkout" value="Check Out" class="btn btn-primary" />
+                 </form>
+            </td>
+        </tr>
+    </table>
+
+</div
+<div>
+    <a asp-page="./Edit" asp-route-id="@Model.ShoppingCart.CartId">Edit</a> |
+    <a asp-page="./Index">Back to List</a>
+</div>

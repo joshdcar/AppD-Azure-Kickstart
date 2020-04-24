@@ -1,0 +1,27 @@
+{
+	"folders": [
+		{
+			"path": "."
+		},
+		{
+			"path": "labs/app-services/src/SecondChanceParts.Web"
+		},
+		{
+			"path": "labs/app-services/src/SecondChanceParts.Api"
+		},
+		{
+			"path": "labs/azure-functions/src/SecondChanceParts.Functions"
+		}
+	],
+	"settings": {},
+	"launch": {
+		"configurations": [],
+		"compounds": [{
+			"name": "Launch Web & API",
+			"configurations": [
+			  ".NET Core Launch (web)",
+			  ".NET Core Launch (api)"
+			]
+		}]
+	}
+}

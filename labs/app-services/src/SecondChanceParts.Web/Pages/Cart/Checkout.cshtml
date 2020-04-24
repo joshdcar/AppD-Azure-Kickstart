@@ -1,0 +1,14 @@
+@page
+@model SecondChanceParts.Web.Pages.Cart.CheckoutModel
+
+@{
+    ViewData["Title"] = "Shopping Cart - Checkout";
+}
+
+<h1>Check Out</h1>
+<hr />
+<div>Thank you for submitting your order. Your order is now being processed.</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

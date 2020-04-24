@@ -1,0 +1,227 @@
+
+{
+    "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "sqlAdministratorLogin": {
+            "type": "string",
+            "metadata": {
+                "description": "The admin user of the SQL Server"
+            }
+        },
+        "sqlAdministratorLoginPassword": {
+            "type": "securestring",
+            "metadata": {
+                "description": "The password of the admin user of the SQL Server"
+            }
+        },
+        "webAppName": {
+            "type": "string",
+            "defaultValue": "[concat('appd-scp-web-',uniquestring(resourceGroup().id))]",
+            "metadata": {
+                "description": "The name of the function app that you wish to create."
+            }
+        },
+        "apiAppName": {
+            "type": "string",
+            "defaultValue": "[concat('appd-scp-api-',uniquestring(resourceGroup().id))]",
+            "metadata": {
+                "description": "The name of the function app that you wish to create."
+            }
+        },
+        "location": {
+            "type": "string",
+            "defaultValue": "[resourceGroup().location]",
+            "metadata": {
+                "description": "Location for all resources."
+            }
+        }
+    },
+    "variables": {
+        "webApp": "[parameters('webAppName')]",
+        "webHostPlan": "[concat(parameters('webAppName'),'-asp')]",
+        "apiApp": "[parameters('apiAppName')]",
+        "apiHostPlan": "[concat(parameters('apiAppName'),'-asp')]",
+        "sqlserverName": "[concat('sqlserver', uniqueString(resourceGroup().id))]",
+        "databaseName": "SecondChanceDb",
+        "databaseEdition": "Basic",
+        "databaseCollation": "SQL_Latin1_General_CP1_CI_AS",
+        "databaseServiceObjectiveName": "Basic"
+    },
+    "resources": [
+        {
+            "name": "[variables('sqlServerName')]",
+            "type": "Microsoft.Sql/servers",
+            "apiVersion": "2019-06-01-preview",
+            "location": "[parameters('location')]",
+            "tags": {
+                "displayName": "SqlServer"
+            },
+            "properties": {
+                "administratorLogin": "[parameters('sqlAdministratorLogin')]",
+                "administratorLoginPassword": "[parameters('sqlAdministratorLoginPassword')]",
+                "version": "12.0"
+            },
+            "resources": [
+                {
+                    "name": "[variables('databaseName')]",
+                    "type": "databases",
+                    "apiVersion": "2015-01-01",
+                    "location": "[parameters('location')]",
+                    "tags": {
+                        "displayName": "Database"
+                    },
+                    "properties": {
+                        "edition": "[variables('databaseEdition')]",
+                        "collation": "[variables('databaseCollation')]",
+                        "requestedServiceObjectiveName": "[variables('databaseServiceObjectiveName')]"
+                    },
+                    "dependsOn": [
+                        "[variables('sqlServerName')]"
+                    ],
+                    "resources": [
+                        {
+                            "comments": "Transparent Data Encryption",
+                            "name": "current",
+                            "type": "transparentDataEncryption",
+                            "apiVersion": "2014-04-01-preview",
+                            "properties": {
+                                "status": "Enabled"
+                            },
+                            "dependsOn": [
+                                "[variables('databaseName')]"
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "name": "AllowAllMicrosoftAzureIps",
+                    "type": "firewallrules",
+                    "apiVersion": "2014-04-01",
+                    "location": "[parameters('location')]",
+                    "properties": {
+                        "endIpAddress": "0.0.0.0",
+                        "startIpAddress": "0.0.0.0"
+                    },
+                    "dependsOn": [
+                        "[variables('sqlServerName')]"
+                    ]
+                }
+            ]
+        },
+        {
+            "type": "Microsoft.Web/serverfarms",
+            "apiVersion": "2018-02-01",
+            "name": "[variables('webHostPlan')]",
+            "location": "[parameters('location')]",
+            "sku": {
+                "name": "B1",
+                "capacity": 1
+            },
+            "properties": {
+                "name": "[variables('webHostPlan')]"
+            }
+        },
+        {
+            "apiVersion": "2015-08-01",
+            "type": "Microsoft.Web/sites",
+            "name": "[variables('webApp')]",
+            "location": "[parameters('location')]",
+            "kind": "app",
+            "dependsOn": [
+                "[resourceId('Microsoft.Web/serverfarms', variables('webHostPlan'))]",
+                "[resourceId('Microsoft.Sql/servers', variables('sqlserverName'))]"
+            ],
+            "properties": {
+                "serverFarmId": "[resourceId('Microsoft.Web/serverfarms', variables('webHostPlan'))]",
+                "siteConfig": {
+                    "connectionStrings": [
+                        {
+                            "name": "SecondChancePartsContext",
+                            "connectionString": "[concat('Server=tcp:', variables('sqlserverName'), '.database.windows.net,1433;Initial Catalog=', variables('databaseName'), ';Persist Security Info=False;User ID=', parameters('sqlAdministratorLogin'), ';Password=', parameters('sqlAdministratorLoginPassword'), ';MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;')]"
+                        }
+                    ],
+                    "appSettings": [
+                        {
+                            "name": "WEBSITE_RUN_FROM_PACKAGE",
+                            "value": "1"
+                        },
+                        {
+                            "name": "AppSettings:ApiRootUrl",
+                            "value": "[concat('https://', variables('apiApp'), '.azurewebsites.net')]"
+                        },
+                        {
+                            "name": "ASPNETCORE_ENVIRONMENT",
+                            "value": "Release"
+                        }
+                    ]
+                }
+            },
+            "resources": [
+                {
+                    "name": "AppDynamics.WindowsAzure.SiteExtension.4.5.Release",
+                    "type": "siteextensions",
+                    "apiVersion": "2015-08-01",
+                    "dependsOn": [
+                        "[resourceId('Microsoft.Web/Sites', variables('webApp'))]"
+                    ],
+                    "properties": {
+                    }
+                }
+            ]
+        },
+        {
+            "type": "Microsoft.Web/serverfarms",
+            "apiVersion": "2018-02-01",
+            "name": "[variables('apiHostPlan')]",
+            "location": "[parameters('location')]",
+            "sku": {
+                "name": "B1",
+                "capacity": 1
+            },
+            "properties": {
+                "name": "[variables('apiHostPlan')]"
+            }
+        },
+        {
+            "apiVersion": "2015-08-01",
+            "type": "Microsoft.Web/sites",
+            "name": "[variables('apiApp')]",
+            "location": "[parameters('location')]",
+            "kind": "app",
+            "dependsOn": [
+                "[resourceId('Microsoft.Web/serverfarms', variables('apiHostPlan'))]",
+                "[resourceId('Microsoft.Sql/servers', variables('sqlserverName'))]"
+            ],
+            "properties": {
+                "serverFarmId": "[resourceId('Microsoft.Web/serverfarms', variables('apiHostPlan'))]",
+                "siteConfig": {
+                    "connectionStrings": [
+                        {
+                            "name": "SecondChancePartsContext",
+                            "connectionString": "[concat('Server=tcp:', variables('sqlserverName'), '.database.windows.net,1433;Initial Catalog=', variables('databaseName'), ';Persist Security Info=False;User ID=', parameters('sqlAdministratorLogin'), ';Password=', parameters('sqlAdministratorLoginPassword'), ';MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;')]"
+                        }
+                    ],
+                    "appSettings": [
+                        {
+                            "name": "WEBSITE_RUN_FROM_PACKAGE",
+                            "value": "1"
+                        }
+                    ]
+                }
+            },
+            "resources": [
+                {
+                    "name": "AppDynamics.WindowsAzure.SiteExtension.4.5.Release",
+                    "type": "siteextensions",
+                    "apiVersion": "2015-08-01",
+                    "dependsOn": [
+                        "[resourceId('Microsoft.Web/Sites', variables('apiApp'))]"
+                    ],
+                    "properties": {
+                    }
+                }
+            ]
+        }
+    ]
+}

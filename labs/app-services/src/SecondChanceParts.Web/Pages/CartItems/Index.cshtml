@@ -1,0 +1,48 @@
+@page
+@model SecondChanceParts.Web.Pages.CartItems.IndexModel
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+<h1>Index</h1>
+
+<p>
+    <a asp-page="Create">Create New</a>
+</p>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.ShoppingCartItem[0].ItemCount)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.ShoppingCartItem[0].Part)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.ShoppingCartItem[0].Cart)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model.ShoppingCartItem) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.ItemCount)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Part.PartId)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Cart.CartId)
+            </td>
+            <td>
+                <a asp-page="./Edit" asp-route-id="@item.ItemId">Edit</a> |
+                <a asp-page="./Details" asp-route-id="@item.ItemId">Details</a> |
+                <a asp-page="./Delete" asp-route-id="@item.ItemId">Delete</a>
+            </td>
+        </tr>
+}
+    </tbody>
+</table>
