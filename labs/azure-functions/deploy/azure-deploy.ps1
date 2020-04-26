@@ -4,6 +4,9 @@ function Get-RandomCharacters($length, $characters) {
     $private:ofs="" 
     return [String]$characters[$random]
 }
+#Get Environment Configuration (join-path for multiplatform path support)
+$configPath = join-path "../../../environment" -ChildPath "config.json"
+$config = Get-Content $configPath | ConvertFrom-Json
 
 Write-Host ("Current Configuration:") -ForegroundColor Green
 Write-Host (-join("Resource Group: ", $config.AzureResourceGroup)) -ForegroundColor Green
@@ -28,7 +31,7 @@ $config = Get-Content $configPath | ConvertFrom-Json
 $resourceGroup = $config.AzureResourceGroup
 
 $random = Get-RandomCharacters -length 5 -characters 'abcdefghiklmnoprstuvwxyz'
-$storageAccount = "appdorderfuncstg"
+$storageAccount = "appdorderfuncstg$random"
 $appServicePlan = "appd-scp-asp-$random"
 $functionApp = "appd-scp-func-$random"
 $serviceBus = "appd-scp-sb-$random"
@@ -56,7 +59,7 @@ az functionapp plan create `
     --location $region `
     --sku B1 `
     --output none
-Write-Host ("Funcation App Plan Created: $appServicePlan") -ForegroundColor Green
+Write-Host ("Function App Plan Created: $appServicePlan") -ForegroundColor Green
 
 # Create a Function App
 az functionapp create `
@@ -70,7 +73,7 @@ Write-Host ("Function App Created: $functionApp") -ForegroundColor Green
 
 # Create a Service Bus Topic Subscription (We want to listen for Checkout Order Events)
 $serviceBus = az servicebus namespace list `
-    --resource-group "azure-workshop-steven-rogers" `
+    --resource-group $resourceGroup `
     --query [0].name `
     -o json
 Write-Host ("Get Service Bus Reference: $serviceBus") -ForegroundColor Green
@@ -92,14 +95,6 @@ $connectionString=$(az servicebus namespace authorization-rule keys list `
                     --output tsv)
 Write-Host ("Retrieve Service Bus Connection String for $serviceBus") -ForegroundColor Green
 
-#Update Function App Settings 
-az functionapp config appsettings set `
-    --name $functionApp `
-    --resource-group $resourceGroup `
-    --settings "ServiceBusConnection=$connectionString" `
-    --output none
-Write-Host ("Add Service Bus Connection String to Function AppSettings") -ForegroundColor Green
-
 #Create CosmosDB Account
 az cosmosdb create `
     -n $accountName `
@@ -107,14 +102,16 @@ az cosmosdb create `
     --kind MongoDB `
     --default-consistency-level Eventual `
     --locations regionName=$region failoverPriority=0 isZoneRedundant=False `
-    --output none `
+    --output none 
+Write-Host ("CosmosDB Account Created $accountName") -ForegroundColor Green
 
 #Create a MongoDB API Database
 az cosmosdb mongodb database create `
     -a $accountName `
     -g $resourceGroup `
     -n $databaseName `
-    --output none `
+    --output none 
+Write-Host ("CosmosDB Mongo Database Created $databaseName") -ForegroundColor Green
 
 #Create Collection
 az cosmosdb mongodb collection create `
@@ -125,6 +122,7 @@ az cosmosdb mongodb collection create `
     --shard $partitionKey `
     --throughput 400 `
     --output none
+Write-Host ("CosmosDB Database Collection Created $collectionName") -ForegroundColor Green
 
 #Get CosmosDB Connection String
 $cosmosConnectionString = $(az cosmosdb keys list `
@@ -134,17 +132,36 @@ $cosmosConnectionString = $(az cosmosdb keys list `
                             --query connectionStrings[0].connectionString`
                             --output tsv)
 
-#Update Function App Settings
-az functionapp config appsettings set `
-    --name $functionApp `
-    --resource-group $resourceGroup `
-    --settings "CosmosDbConnection=$cosmosConnectionString" `
-    --output none
-Write-Host ("Add CosmosdB Connection String to Function AppSettings") -ForegroundColor Green
-
 Write-Host("If deployment fails re-run deployment with the following commands:") -ForegroundColor Yellow
 Write-Host (-join("az functionapp deployment source config-zip -g ",$resourceGroup," -n ", $functionApp, " --src ", $functionsPackage))
 
 az functionapp deployment source config-zip `
- -g $resourceGroup -n $functionApp --src $functionsPackage
+ -g $resourceGroup -n $functionApp --src $functionsPackage --output none
  Write-Host ("Function App Deployed.") -ForegroundColor Green
+
+ #Update Function App Settings
+az functionapp config appsettings set `
+--name $functionApp `
+--resource-group $resourceGroup `
+--settings "CosmosDbConnection=$cosmosConnectionString" `
+--output none
+Write-Host ("Add CosmosdB Connection String ") -ForegroundColor Green
+
+ #Update Function App Settings
+ az functionapp config appsettings set `
+ --name $functionApp `
+ --resource-group $resourceGroup `
+ --settings "ServiceBusConnection=$connectionString" `
+ --output none
+ Write-Host ("Add Service Bus Connection String to Function AppSettings") -ForegroundColor Green
+
+#Update Function App Settings
+az functionapp config appsettings set `
+--name $functionApp `
+--resource-group $resourceGroup `
+--settings "appdynamics.agent.tierName=OrderProcessingFunctions" `
+--output none
+Write-Host ("Add Service Bus Connection String to Function AppSettings") -ForegroundColor Green
+
+
+ 

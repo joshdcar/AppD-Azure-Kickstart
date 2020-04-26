@@ -181,12 +181,12 @@ It can be helpful to confirm that the agent is loaded into the application to de
 
 <br><br><br>
 
-# **DEEP DIVE** Better Understanding Deploying Azure Resources with ARM Templates  
+# Better Understanding the Deployment  
 <a name="understandingdeploy"></a>
 
 Defining and provisioning Azure resources outside the portal is considered a best practice. Azure provides several paths including ARM Templates, Azure CLI, and Azure Powershell. Arguably ARM Templates is the most popular and is the core of the provisioning solution utilized by this lab.
 
-The Deployment Script can be broken into 4 main functional sections:
+The Deployment Script can be broken into 3 main functional sections:
 
 1. Building and Packaging the .Net application
 2. Deploying Azure Resources through ARM Templates
