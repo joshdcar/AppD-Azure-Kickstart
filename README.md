@@ -50,7 +50,7 @@ If you're an organizer you can find more details on preparing an Azure subscript
 
 | Lab   |      Primary Objective     |  Secondary Objective |  Bonus Objective |
 |----------|:-------------|:------|:------|
-| [Azure App Services (45 minutes)](./labs/app-services/azure-app-service-monitoring.md) |  Deploying Agents via Site Extensions | Provision Resources w/ ARM Templates | Configure Analytics |
+| [Azure App Services (45 minutes)](./labs/app-services/app-services.md) |  Deploying Agents via Site Extensions | Provision Resources w/ ARM Templates | Configure Analytics |
 | [Azure Monitor Extensions (45 minutes)](./labs/azure-extensions/azure-extensions.md) |    Configure Azure Monitor   | Provision Resources w/ Azure CLI | Monitor Multiple Resources |
 | [Azure Functions (30 minutes)](./labs/azure-functions/azure-functions.md) | Deploying Agents via Site Extensions | Provision Resources w/ Powershell | SQL & CosmosDB Metrics |
 | [Azure Kubernetes Services (AKS) (45 minutes)](./labs/aks/aks.md) | Deploy Cluster Agent |    kubectl with AKS |  |
