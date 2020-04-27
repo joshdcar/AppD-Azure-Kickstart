@@ -13,7 +13,12 @@
 			"path": "labs/azure-functions/src/SecondChanceParts.Functions"
 		}
 	],
-	"settings": {},
+	"settings": {
+		"cSpell.words": [
+			"Flowmap",
+			"appd"
+		]
+	},
 	"launch": {
 		"configurations": [],
 		"compounds": [{

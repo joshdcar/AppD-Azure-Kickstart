@@ -1,40 +1,42 @@
 # Workshop - Getting Started
-**Before continueing please confirm you have installed all the [pre-requisites](labs-prereqs.md) for the workshop.**
+
+**Before continuing please confirm you have installed all the [pre-requisites](labs-prereqs.md) for the workshop.**
 
 ## Clone This Workshop Github Repository
-The Azure Cloud Workshop is maintained here on github as a git repostiory . Before starting the workshop you should clone this repository so you have it locally on your computer. ([What is cloning?](https://help.github.com/en/github/creating-cloning-and-archiving-repositories/cloning-a-repository)). 
+
+The Azure Cloud Workshop is maintained here on github as a git repository . Before starting the workshop you should clone this repository so you have it locally on your computer. ([What is cloning?](https://help.github.com/en/github/creating-cloning-and-archiving-repositories/cloning-a-repository)).
 
 ### **git command line**
 
-```
+```Powershell
 command prompt: git clone https://github.com/joshdcar/appd-azure-cloud-workshop
 ```
 
 ### **Visual Studio Code**
-Visual Studio Code also has built in integration with git. 
+
+Visual Studio Code also has built in integration with git.
 
 1. Open Visual Studio Code
 2. Select the Source Code Icon
 3. Choose Clone Repository
 4. Enter the Url of the workshop github repo
 5. Enter a local location for your repo
-   
+
  ![Git Clone][gitClone]
 
-Once cloned open the **appd-azure-cloud-workshop.code-workspace** file with Visual Studio Code. Confirm you see a directory structure similiar to the image below with Visual Studio Code. 
+Once cloned open the **appd-azure-cloud-workshop.code-workspace** file with Visual Studio Code. Confirm you see a directory structure similar to the image below with Visual Studio Code.
 
 If you open the folder and not the workspace you will get a prompt similar to the below:
 
 ![Workspace][workspace]
 
-
 ## Copy Workshop Config File
 
-Before getting started with the lab confirm you have access to the workshop's Azure subscription with the account credentials json file provided by your workshop organizer. 
+Before getting started with the lab confirm you have access to the workshop's Azure subscription with the account credentials json file provided by your workshop organizer.
 
 ![Config File][configfile]
 
-Please take note of the **Azure login credentials** (Username and password) and the **Controller details** (Controller IP Address, ControllerUsername, and ControllerPassword) as you will need to use these throughout the workshop. 
+Please take note of the **Azure login credentials** (Username and password) and the **Controller details** (Controller IP Address, ControllerUsername, and ControllerPassword) as you will need to use these throughout the workshop.
 
 Copy the contents of the config json file into the config.json file located in the environment folder of your local cloned copy of the workshop repository.
 
@@ -58,25 +60,20 @@ Confirm that you have access to Azure both through the standard portal but also 
 
     ![azurePortalRg][azurePortalRg]
 
-
 ### **Azure CLI**
 
 1. Open a command prompt (windows) or terminal (mac).
 2. Enter ``` az login ``` at the prompt
-3. A browser window will be opened for a login. If you have the previous browser session open simply select your login to automatically login with that account. 
-   
+3. A browser window will be opened for a login. If you have the previous browser session open simply select your login to automatically login with that account.
     ![azureCliLogin][azureCliLogin]
-4. Confirm you have successfull logged in with Azure CLI.
-   
+4. Confirm you have successfully logged in with Azure CLI.
     ![azureCliLoginConfirm][azureCliLoginConfirm]
 
 5. Confirm expected subscription details in the console.
 
     ![azureCliLoginPrompt][azureCliLoginPrompt]
 
-> **Info:** This login process stores a cached version of your access token. This generally expires in 90 days but may expire earlier in some scenerios. 
-
-
+> **Info:** This login process stores a cached version of your access token. This generally expires in 90 days but may expire earlier in some scenarios.
 
 ### **Azure Powershell**
 
@@ -89,16 +86,14 @@ Confirm that you have access to Azure both through the standard portal but also 
    ![azurePsCode][azurePsCode]
 
 4. Confirm successful login
-   
    ![azurePsResult][azurePsResult]
-
 
 ## Confirm AppDynamics Controller Access
 
-1. Open a browser and navigate to the the ip address of the controller provided by the organizer 
+1. Open a browser and navigate to the the ip address of the controller provided by the organizer
 2. Login with the provided controller credentials.
 3. Confirm the controller is running and take note of your agent keys for future use.
-   
+
    ![controllerLicense][controllerLicense]
 
 > **TIP**: The workshop controllers are fairly low power virtual machines. Initial startup times may vary and lead to initial timeouts. If timeouts persist confirm that the Network Security Group access policy is in place for port 8090.

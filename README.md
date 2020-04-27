@@ -13,11 +13,11 @@ Azure Resources covered in this workshop include:
 * Azure Functions (Serverless)
 * Azure Kubernetes Service (AKS)
 
-Additionally you will learn how to consume [Azure Monitor Metrics](https://docs.microsoft.com/en-us/azure/azure-monitor/platform/metrics-supported) through the AppDynamics Extensions for Azure. Azure Monitor metrics play a key role in getting visibility into cloud native infrastracture fully managed by Azure where traditional AppDynamics agents can not be deploy.
+Additionally you will learn how to consume [Azure Monitor Metrics](https://docs.microsoft.com/en-us/azure/azure-monitor/platform/metrics-supported) through the AppDynamics Extensions for Azure. Azure Monitor metrics play a key role in getting visibility into cloud native infrastructure fully managed by Azure where traditional AppDynamics agents can not be deploy.
 
 Finally you'll be introduced to some common troubleshooting techniques from confirming and troubleshooting agent deployments to where to find agent logs.
 
-> **_NOTE:_**  Although traditional Virtual Machines (IaaS) will be deployed as part of this workshop for stand alone machine agents we will not be covering monitoring traditional workloads on IaaS which do not differ from traditional non-cloud-native on-premise scenerios.  Additionally each attendee will have an AppDynamics controller deployed to their resource group but deploying and configuring production controllers to Azure is out of scope for this workshop.
+> **_NOTE:_**  Although traditional Virtual Machines (IaaS) will be deployed as part of this workshop for stand alone machine agents we will not be covering monitoring traditional workloads on IaaS which do not differ from traditional non-cloud-native on-premise scenarios.  Additionally each attendee will have an AppDynamics controller deployed to their resource group but deploying and configuring production controllers to Azure is out of scope for this workshop.
 
 ## Workshop Delivery
 
@@ -36,11 +36,11 @@ Attendees should ensure that they have all the pre-requisites installed prior to
 * [Required Lab Prerequisites](./labs/labs-prereqs.md)
 * [Configuring Lab Environment](./labs/labs.md)
 
-> ADVICE: Each lab contains helpful links to online learning paths for Azure from Microsoft Learn. Microsoft >Learn is a selfpaced, guided, and interactive training site for Microsoft Azure. Microsoft Learn provides a >short lived sandboxed Azure subscription as part of their guided lesson.  The entire experience is gamafied >so you can earn baddges and rewards as you learn more about Azure.  More details available at [Microsoft >Learn](https://docs.microsoft.com/en-us/learn/).
+> ADVICE: Each lab contains helpful links to online learning paths for Azure from Microsoft Learn. Microsoft >Learn is a self-paced, guided, and interactive training site for Microsoft Azure. Microsoft Learn provides a >short lived sandbox Azure subscription as part of their guided lesson.  The entire experience is gamified >so you can earn badges and rewards as you learn more about Azure.  More details available at [Microsoft >Learn](https://docs.microsoft.com/en-us/learn/).
 
 ### Organizer
 
-If you're an organizer you can find more details on preparing an Azure subscription for the lab and creating atteendee accounts & resources.
+If you're an organizer you can find more details on preparing an Azure subscription for the lab and creating attendee accounts & resources.
 
 * [Organizer Instructions](./organizer/readme.md)
 
