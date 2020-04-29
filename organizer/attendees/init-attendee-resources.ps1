@@ -26,7 +26,7 @@
 $domain = "appdcloud.onmicrosoft.com"
 $contollerUsername = "admin"
 $controllerPassword = "welcome1"
-$githubRepoUrl = "https://github.com/joshdcar/appd-azure-cloud-workshop"
+$githubRepoUrl = "https://github.com/joshdcar/AppD-Azure-Kickstart"
 $vmusername = "appdadmin"
 $sharedPassword = "AppDynamicsR0ck$!"
 $subscriptionId = "d4d4c111-4d43-41b2-bb7f-a9727e5d0ffa"

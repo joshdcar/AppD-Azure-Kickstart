@@ -203,6 +203,10 @@
             {
               "name": "ASPNETCORE_ENVIRONMENT",
               "value": "Release"
+            },
+            {
+              "name": "appdynamics.agent.tierName",
+              "value": "Second Chance Web"
             }
           ]
         }
@@ -242,6 +246,10 @@
             }
           ],
           "appSettings": [
+            {
+              "name": "appdynamics.agent.tierName",
+              "value": "Second Chance API"
+            },
             {
               "name": "WEBSITE_RUN_FROM_PACKAGE",
               "value": "1"

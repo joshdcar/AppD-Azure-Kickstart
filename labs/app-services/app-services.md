@@ -181,14 +181,26 @@ Additional agent settings, for example the AppDynamicsConfig.json can be found a
 
 ![kuduAgentFiles][kuduAgentFiles]
 
+## Generating Load
+
+You can generate the load by visiting the Second Chance parts Site. Ensure you perform some of the following actions to ensure your flowmap is generated and business transactions are identified:
+
+* Create a new shopping cart with your name and select "Start Shopping"
+* Click on Parts/Carts/CartItems/Privacy links in the navigation
+
+![siteHome][siteHome]
+
+* Add Items to your cart and checkout **This page exclusively will generate downstream API requests**
+* Unlike a real shopping cart you can checkout any time you want (but you can never leave!). Selecting Checkout several times will generated topic messages behind the scenes.
+
+![siteCheckout][siteCheckout]
+
 ### **Confirming Agent is Loaded**
 
 It can be helpful to confirm that the agent is loaded into the application to determine if additional resets are required or if there are other issues preventing the agent from attaching. You can review processes and look for the AppDynamics module is loaded within the process by viewing the **Process Explorer** from the top menu.
 
 ![kuduProcesses][kuduProcesses]
 ![kuduProcessModules][kuduProcessModules]
-
-<br><br>
 
 ## Better Understanding the Deployment
 
@@ -426,3 +438,5 @@ We are using the Azure CLI for deployment and specifically the **az webapp deplo
 [kuduProcesses]: ../../images/labs/kudu_processes.png "kuduProcesses"
 [kuduProcessModules]: ../../images/labs/kudu_process_module.png "kuduProcessModules"
 [zipDeploy]: ../../images/labs/zip_deploy.png "zipDeploy"
+[siteHome]: ../../images/labs/app_service_site_home.png "siteHome"
+[siteCheckout]: ../../images/labs/app_service_site_checkout.png "siteCheckout"

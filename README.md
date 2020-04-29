@@ -11,7 +11,7 @@ Azure Resources covered in this workshop include:
 
 * Azure App Services (Web & API Apps)
 * Azure Functions (Serverless)
-* Azure Kubernetes Service (AKS)
+* Azure Kubernetes Service (AKS) (Coming Soon)
 
 Additionally you will learn how to consume [Azure Monitor Metrics](https://docs.microsoft.com/en-us/azure/azure-monitor/platform/metrics-supported) through the AppDynamics Extensions for Azure. Azure Monitor metrics play a key role in getting visibility into cloud native infrastructure fully managed by Azure where traditional AppDynamics agents can not be deploy.
 
@@ -47,10 +47,9 @@ If you're an organizer you can find more details on preparing an Azure subscript
 
 ## **Labs**
 
-
 | Lab   |      Primary Objective     |  Secondary Objective |  Bonus Objective |
 |----------|:-------------|:------|:------|
 | [Azure App Services (45 minutes)](./labs/app-services/app-services.md) |  Deploying Agents via Site Extensions | Provision Resources w/ ARM Templates | Configure Analytics |
 | [Azure Monitor Extensions (45 minutes)](./labs/azure-extensions/azure-extensions.md) |    Configure Azure Monitor   | Provision Resources w/ Azure CLI | Monitor Multiple Resources |
 | [Azure Functions (30 minutes)](./labs/azure-functions/azure-functions.md) | Deploying Agents via Site Extensions | Provision Resources w/ Powershell | SQL & CosmosDB Metrics |
-| [Azure Kubernetes Services (AKS) (45 minutes)](./labs/aks/aks.md) | Deploy Cluster Agent |    kubectl with AKS |  |
+| Azure Kubernetes Services (AKS) (45 minutes) **COMING SOON** | Deploy Cluster Agent |    kubectl with AKS |  |

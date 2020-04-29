@@ -159,7 +159,7 @@ Write-Host ("Add CosmosdB Connection String ") -ForegroundColor Green
 az functionapp config appsettings set `
 --name $functionApp `
 --resource-group $resourceGroup `
---settings "appdynamics.agent.tierName=OrderProcessingFunctions" `
+--settings "appdynamics.agent.tierName=SecondChancePartsFunctions" `
 --output none
 Write-Host ("Add Service Bus Connection String to Function AppSettings") -ForegroundColor Green
 

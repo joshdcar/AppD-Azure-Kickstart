@@ -1,7 +1,9 @@
 {
   "Region": "EastUS",
-  "DotnetAgentVMPassword": "[password]",
-  "AzureResourceGroup": "[resource-group]",
-  "DotnetAgentVMUsername": "[username]"
+  "DotnetAgentVMPassword": "AppDynamicsR0ck$!",
+  "AzureResourceGroup": "azure-workshop-nick-fury",
+  "DotnetAgentVMUsername": "appdadmin",
+  "servicePrincipal": "e7cc8adf-983c-4c79-8f8c-4663921e6444",
+  "clientSecret": "52f25273-defe-4795-b581-1ff803f3166c"
   }
   

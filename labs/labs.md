@@ -107,7 +107,7 @@ This workshop consists of several labs with both primary, secondary , and bonus 
 | [Azure App Services](app-services/azure-app-service-monitoring.md) |  Deploying Agents via Site Extensions | Provision Resources w/ ARM Templates | Configure Analytics |
 | [Azure Monitor Extensions](azure-extensions/azure-extensions.md) |    Configure Azure Monitor   | Provision Resources w/ Azure CLI | Monitor Multiple Resources |
 | [Azure Functions](azure-functions/azure-functions.md) | Deploying Agents via Site Extensions | Provision Resources w/ Powershell | SQL & CosmosDB Metrics |
-| [Azure Kubernetes Services (AKS)](aks/aks.md) | Deploy Cluster Agent |    kubectl with AKS |  |
+| Azure Kubernetes Services (AKS) **Coming Soon**. | Deploy Cluster Agent |    kubectl with AKS |  |
 
 [configfile]: ../images/labs/Config_File_Sample.png "Config File"
 [configLocation]: ../images/labs/Config_File_Location.png "Config File Location"

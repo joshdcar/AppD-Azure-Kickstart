@@ -36,7 +36,7 @@ az aks create `
     --name $clusterName `
     --service-principal $servicePrincipalId `
     --client-secret $clientSecret `
-    --node-vm-size "Standard_B2s" `
+    --node-vm-size "Standard_DS2_v2" `
     --node-count 1 `
     --ssh-key-value ../../../environment/shared/keys/appd-cloud-kickstart-azure.pub `
     --location $region
