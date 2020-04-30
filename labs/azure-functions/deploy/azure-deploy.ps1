@@ -129,7 +129,7 @@ $cosmosConnectionString = $(az cosmosdb keys list `
                             -n $accountName `
                             -g $resourceGroup `
                             --type connection-strings `
-                            --query connectionStrings[0].connectionString`
+                            --query connectionStrings[0].connectionString `
                             --output tsv)
 
 Write-Host("If deployment fails re-run deployment with the following commands:") -ForegroundColor Yellow
