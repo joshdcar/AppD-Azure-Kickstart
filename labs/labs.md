@@ -78,7 +78,7 @@ Confirm that you have access to Azure both through the standard portal but also 
 ### **Azure Powershell**
 
 1. Open a powershell prompt. This can be done directly or by entering pwsh at the terminal\command prompt.
-2. Enter ``` connect AzAccount ``` at the prompt. Follow the instructions to the website and take note of the code
+2. Enter ``` connect-AzAccount ``` at the prompt. Follow the instructions to the website and take note of the code
 
    ![azurePsPrompt][azurePsPrompt]
 3. Enter the code into your browser window

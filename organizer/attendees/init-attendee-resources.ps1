@@ -34,6 +34,8 @@ $subscriptionId = "d4d4c111-4d43-41b2-bb7f-a9727e5d0ffa"
 #Get Environment Configuration
 [array]$attendees = Get-Content ./attendees.json | ConvertFrom-Json 
 
+#Get Shared Image Gallery ID
+$imageGallery = az sig show --resource-group "workshop-resources" --gallery-name "Azure_Workshop_Images" --query id
 
 foreach($attendee in $attendees) {
     
@@ -78,6 +80,9 @@ foreach($attendee in $attendees) {
     az role assignment create --role "Owner" --assignee $userPrincipal --resource-group $resourceGroup --output none
     Write-Host ("Owner Role Assigned to $userPrincipal") -ForegroundColor Green
 
+    #Assign Permissios to Shared Resource Group
+    az role assignment create --role "Reader" --assignee $userPrincipal --scope $imageGallery
+ 
     $vmname="appd-controller-vm"
 
     #Create Controller VM
