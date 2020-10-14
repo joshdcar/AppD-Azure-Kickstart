@@ -9,7 +9,7 @@ The Azure Cloud Workshop is maintained here on github as a git repository . Befo
 ### **git command line**
 
 ```Powershell
-command prompt: git clone https://github.com/joshdcar/appd-azure-cloud-workshop
+command prompt: git clone https://github.com/joshdcar/AppD-Azure-Kickstart
 ```
 
 ### **Visual Studio Code**

@@ -22,6 +22,9 @@ $clientSecret = $config.clientSecret
 $random = Get-RandomCharacters -length 5 -characters 'abcdefghiklmnoprstuvwxyz'
 $clusterName = "appd-sp-aks-$random"
 $registryName="appdspcr$random"
+$nodeVMSize = "Standard_B2ms"
+
+$aksResourceGroup = "$resourceGroup-aks"
 
 $registryId = $(az acr create `
     --resource-group $resourceGroup `
@@ -36,9 +39,10 @@ az aks create `
     --name $clusterName `
     --service-principal $servicePrincipalId `
     --client-secret $clientSecret `
-    --node-vm-size "Standard_DS2_v2" `
+    --node-vm-size $nodeVMSize `
     --node-count 1 `
     --ssh-key-value ../../../environment/shared/keys/appd-cloud-kickstart-azure.pub `
+    --node-resource-group $aksResourceGroup `
     --location $region
 Write-Host ("AKS Cluster Created") -ForegroundColor Green
 

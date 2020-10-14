@@ -1,3 +1,8 @@
+$ErrorActionPreference = "Stop"
+
+$currentLocation = Get-Location
+
+Write-Host ("Current App Services Location: $currentLocation") -ForegroundColor Green
 
 #Get Environment Configuration (join-path for multiplatform path support)
 $configPath = join-path "../../../environment" -ChildPath "config.json"
@@ -6,15 +11,21 @@ $config = Get-Content $configPath | ConvertFrom-Json
 Write-Host ("Current Configuration:") -ForegroundColor Green
 Write-Host (-join("Resource Group: ", $config.AzureResourceGroup)) -ForegroundColor Green
 
+az account set --subscription $config.SubscriptionId
+
 $resourceGroup = $config.AzureResourceGroup
+
+Write-Host ("Building and local publishing web applications (dotnet publish)") -ForegroundColor Green
 
 # Compile & Publish the Web Site 
 $webcsproj = join-path "../src/SecondChanceparts.Web" -ChildPath "SecondChanceParts.Web.csproj"
 dotnet publish -c Release $webcsproj
-$webPublishFolder =  join-path "../src/SecondChanceparts.Web/bin/release/netcoreapp3.1" -ChildPath "/publish"
+$webPublishFolder =  join-path $currentLocation -ChildPath "../src/SecondChanceparts.Web/bin/release/netcoreapp3.1/publish" 
+Write-Host ("Current Web Publish Folder: $webPublishFolder") -ForegroundColor Green
 
-# Create the Web Site Deployment Package
-$webPackage = "secondchanceparts.web.zip"
+# Create the Web Site Deployment Package 
+$webPackage = join-path $currentLocation -ChildPath "secondchanceparts.web.zip"
+Write-Host ("Web Package Location $webPackage") -ForegroundColor Green
 if(Test-path $webPackage) {Remove-item $webPackage}
 Add-Type -assembly "system.io.compression.filesystem"
 [io.compression.zipfile]::CreateFromDirectory($webPublishFolder, $webPackage) 
@@ -22,10 +33,12 @@ Add-Type -assembly "system.io.compression.filesystem"
 # Compile & Publish the Web API
 $apicsproj = join-path "../src/SecondChanceparts.Api" -ChildPath "SecondChanceParts.Api.csproj"
 dotnet publish -c Release $apicsproj
-$apiPublishFolder =  join-path "../src/SecondChanceparts.Api/bin/release/netcoreapp3.1" -ChildPath "/publish" 
+$apiPublishFolder =  join-path $currentLocation -ChildPath "../src/SecondChanceparts.Api/bin/release/netcoreapp3.1/publish" 
+Write-Host ("Current API Publish Folder: $apiPublishFolder") -ForegroundColor Green
 
 # Create the Web API Deployment Package
-$apiPackage = "secondchanceparts.api.zip"
+$apiPackage = join-path $currentLocation -ChildPath "secondchanceparts.api.zip"
+Write-Host ("API Package Location $webPackage") -ForegroundColor Green
 if(Test-path $apiPackage) {Remove-item $apiPackage}
 Add-Type -assembly "system.io.compression.filesystem"
 [io.compression.zipfile]::CreateFromDirectory($apiPublishFolder, $apiPackage)

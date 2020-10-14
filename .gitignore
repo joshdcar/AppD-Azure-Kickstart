@@ -356,5 +356,7 @@ organizer/attendees/attendee-files/
 *.zip
 environment/shared/keys/AppD-Cloud-Kickstart-azure.pem
 environment/shared/keys/AppD-Cloud-Kickstart-azure.pub
+environment/shared/keys/appd-azure-cloud-kickstart.pem
+environment/shared/keys/appd-azure-cloud-kickstart.pub
 *.db
 environment/config.json

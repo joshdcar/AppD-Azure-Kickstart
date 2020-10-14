@@ -1,4 +1,14 @@
-# Workshop Prerequisites
+# Prerequisites
+
+Attendees have two environment options for the workshop:
+
+1. Use the provided pre-configured **"Launchpad"** virtual machine. This is a Windows 10 virtual machine that has all the required tooling and prerequisites already configured for the the workshop labs.
+
+2. Execute the workshop locally on your own device ensuring that you install all the prerequisites as outlined in the section *"Workshop Local Prerequisites"*.
+
+If you choose to use the **Launchpad** then you will require an RDP Client on your local desktop to access the virtual machine hosted in Azure.  The connection details for the LaunchPad will be provided by your organizer. 
+
+## Workshop Local Prerequisites
 
 The workshop makes use of tools and techniques commonly used with Azure customers.  Please download and install the following tools prior to starting the workshop. When appropriate download links and instructions are provided for both Windows & Mac.
 
@@ -11,14 +21,6 @@ The workshop makes use of tools and techniques commonly used with Azure customer
 * [Azure Powershell Modules](https://docs.microsoft.com/en-us/powershell/azure/?view=azps-3.7.0) - Powershell modules for managing Azure resources.[[Install](https://docs.microsoft.com/en-us/powershell/azure/install-az-ps?view=azps-3.7.0)]
 * [Docker Desktop](https://www.docker.com/) - A local docker environment for Windows and Mac.
 * Remote Desktop (RDP) Application of choice [[Mac]](https://docs.microsoft.com/en-us/windows-server/remote/remote-desktop-services/clients/remote-desktop-mac)
-
-## Recommended Online Resources
-
-Although this workshop covers many of the basics of Azure in the context of AppDynamics there are many resources to get additional knowledge.  [Microsoft Learn](https://docs.microsoft.com/en-us/learn/) is a highly recommended source.  Specific learning paths and modules are recommended prior to each lab. The following are recommended modules that should be considered for review prior to the workshop:
-
-* [Introduction to Azure](https://docs.microsoft.com/en-us/learn/modules/welcome-to-azure/)
-* [Introduction to the Azure Portal](https://docs.microsoft.com/en-us/learn/modules/tour-azure-portal/)
-* [Compute Options on Azure](https://docs.microsoft.com/en-us/learn/modules/intro-to-azure-compute/)
 
 
 ## Optional Extras - Visual Studio Code Extensions
@@ -55,3 +57,11 @@ Extensions can be installed directly from Visual Studio Code via the Extensions 
 ![alt text][vsextensions]
 
 [vsextensions]: ../images/prereqs/VS_Code_Extensions.png "Visual Studio Extensions"
+
+## Recommended Online Resources
+
+Although this workshop covers many of the basics of Azure in the context of AppDynamics there are many resources to get additional knowledge.  [Microsoft Learn](https://docs.microsoft.com/en-us/learn/) is a highly recommended source.  Specific learning paths and modules are recommended prior to each lab. The following are recommended modules that should be considered for review prior to the workshop:
+
+* [Introduction to Azure](https://docs.microsoft.com/en-us/learn/modules/welcome-to-azure/)
+* [Introduction to the Azure Portal](https://docs.microsoft.com/en-us/learn/modules/tour-azure-portal/)
+* [Compute Options on Azure](https://docs.microsoft.com/en-us/learn/modules/intro-to-azure-compute/)

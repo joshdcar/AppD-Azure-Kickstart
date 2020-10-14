@@ -1,3 +1,5 @@
+$ErrorActionPreference = "Stop"
+
 # Get Environment Configuration (join-path for multiplatform path support)
 # Additional Instructions https://docs.microsoft.com/en-us/powershell/module/Az.Compute/New-AzVM?view=azps-3.7.0
 
@@ -13,7 +15,7 @@ $PublicIPAddressName = "appd-dotnet-ipaddress"
 
 $VMLocalAdminUser = $config.DotnetAgentVMUsername
 $VMLocalAdminSecurePassword = ConvertTo-SecureString $config.DotnetAgentVMPassword -AsPlainText -Force
-$VMSize = "Standard_DS2_v2"
+$VMSize = "Standard_B2ms"
 
 $Credential = New-Object System.Management.Automation.PSCredential ($VMLocalAdminUser, $VMLocalAdminSecurePassword);
 

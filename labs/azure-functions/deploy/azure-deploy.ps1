@@ -1,4 +1,8 @@
-#Utility function to give us some random values (like UniqueString() in ARM Templates)
+$ErrorActionPreference = "Stop"
+
+$currentLocation = Get-Location
+
+ #Utility function to give us some random values (like UniqueString() in ARM Templates)
 function Get-RandomCharacters($length, $characters) { 
     $random = 1..$length | ForEach-Object { Get-Random -Maximum $characters.length } 
     $private:ofs="" 
@@ -12,12 +16,14 @@ Write-Host ("Current Configuration:") -ForegroundColor Green
 Write-Host (-join("Resource Group: ", $config.AzureResourceGroup)) -ForegroundColor Green
 
 # publish the order processing code
-dotnet publish -c Release "../src/SecondChanceParts.Functions/SecondChanceParts.Functions.csproj"
-$functionsPublishFolder =   "../src/SecondChanceParts.Functions/bin/release/netcoreapp3.1/publish"
-Write-Host ("Function Compiled and Published to Folder") -ForegroundColor Green
+Write-Host ("Building and local publishing function project (dotnet publish)") -ForegroundColor Green
+$functionsproj = join-path "../src/SecondChanceParts.Functions" -ChildPath "SecondChanceParts.Functions.csproj"
+dotnet publish -c Release $functionsproj
+$functionsPublishFolder =   join-path $currentLocation -ChildPath "../src/SecondChanceParts.Functions/bin/release/netcoreapp3.1/publish"
 
 # create the order processing publish package
-$functionsPackage = "scp-functions-deploy.zip"
+$functionsPackage = join-path $currentLocation -ChildPath "scp-functions-deploy.zip"
+Write-Host ("Function Package Location $webPackage") -ForegroundColor Green
 if(Test-path $functionsPackage) {Remove-item $functionsPackage}
 Add-Type -assembly "system.io.compression.filesystem"
 [io.compression.zipfile]::CreateFromDirectory($functionsPublishFolder, $functionsPackage)
@@ -27,10 +33,9 @@ Write-Host ("Publish Folder Compressed for Zip to Deploy") -ForegroundColor Gree
 $configPath = join-path "../../../environment" -ChildPath "config.json"
 $config = Get-Content $configPath | ConvertFrom-Json
 
-
 $resourceGroup = $config.AzureResourceGroup
 
-$random = Get-RandomCharacters -length 5 -characters 'abcdefghiklmnoprstuvwxyz'
+$random = Get-RandomCharacters -length 4 -characters 'abcdefghiklmnoprstuvwxyz'
 $storageAccount = "appdorderfuncstg$random"
 $appServicePlan = "appd-scp-asp-$random"
 $functionApp = "appd-scp-func-$random"

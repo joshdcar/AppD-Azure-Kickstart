@@ -1,0 +1,12 @@
+  
+version: '3'
+
+services:
+  machine:
+    image: appdynamics/machine:${APPD_AGENT_MAJOR_VERSION}
+    restart: always
+    build:
+      context: .
+      args:
+        APPD_AGENT_VERSION: 
+        APPD_AGENT_SHA256: 
