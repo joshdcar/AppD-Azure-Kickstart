@@ -1,15 +1,11 @@
+$ErrorActionPreference = "Stop"
+
 #---------------------------------------------------------------------------------------------------
 # Initialize Workshop Attendee Resources
 #
 # This script will initialize users  
 #
-# The AWS CLI also introduces a new set of simple file commands for efficient file transfers
-# to and from Amazon S3.
-#
-# For more details, please visit:
-#   https://aws.amazon.com/cli/
-#
-# NOTE: By Default Regions are capped at 10 VCPU (Soft limit). Consider Configuration carefully
+# NOTE: Consider region caps for your subscription carefully
 #       when setting region for attendees to not go over this cap.  Current workshop VCPU Usage
 #       Includes:
 #       Controller: (2)
@@ -24,18 +20,21 @@
 #---------------------------------------------------------------------------------------------------
 
 $domain = "appdcloud.onmicrosoft.com"
-$contollerUsername = "admin"
 $controllerPassword = "welcome1"
 $githubRepoUrl = "https://github.com/joshdcar/AppD-Azure-Kickstart"
 $vmusername = "appdadmin"
 $sharedPassword = "AppDynamicsR0ck$!"
-$subscriptionId = "d4d4c111-4d43-41b2-bb7f-a9727e5d0ffa"
+$subscriptionId = "b8d08f39-3950-4c72-9c2e-71491e10ccf6"
+$controllerVmSize = "Standard_D2S_v3" # 2 core 7gb RAM | Demo Controller Spec Equivilent 
+$launchpadVMSize = "Standard_D2S_v3" #Must be series that supports nested VMs (2 CPU - 8GB RAM)
+
+az account set --subscription $subscriptionId
 
 #Get Environment Configuration
 [array]$attendees = Get-Content ./attendees.json | ConvertFrom-Json 
 
 #Get Shared Image Gallery ID
-$imageGallery = az sig show --resource-group "workshop-resources" --gallery-name "Azure_Workshop_Images" --query id
+$imageGallery = az sig show --resource-group "workshop-resources" --gallery-name "Azure_Workshops_Images" --query id
 
 foreach($attendee in $attendees) {
     
@@ -89,11 +88,12 @@ foreach($attendee in $attendees) {
     az vm create `
         --resource-group $resourceGroup `
         --name $vmname `
-        --image "/subscriptions/$subscriptionId/resourceGroups/workshop-resources/providers/Microsoft.Compute/galleries/Azure_Workshop_Images/images/Azure_Workshop_Controller_Image/versions/1.0.0" `
-        --size Standard_DS2_v2 `
+        --image "/subscriptions/$subscriptionId/resourceGroups/workshop-resources/providers/Microsoft.Compute/galleries/Azure_Workshops_Images/images/Azure_Workshop_Controller_Image/versions/1.0.1" `
+        --size $controllerVmSize `
         --admin-username $vmusername  `
         --os-disk-size-gb 100 `
-        --ssh-key-value "../../environment/shared/keys/AppD-Cloud-Kickstart-Azure.pub" `
+        --nsg-rule SSH `
+        --ssh-key-value "../../environment/shared/keys/appd-azure-cloud-kickstart.pub" `
         --output none
 
     #Add 8090 Port Rule for NSG (NSG Name is by convention)
@@ -118,30 +118,72 @@ foreach($attendee in $attendees) {
 
     Write-Host ("Controller VM created at IP $controllerIpAddress") -ForegroundColor Green
 
+    #Create the Extension VM
+
+    $extensionVMName = "appd-azure-extensions-vm"
+
+    az vm create `
+    --resource-group $resourceGroup `
+    --name $extensionVMName `
+    --image "/subscriptions/$subscriptionId/resourceGroups/workshop-resources/providers/Microsoft.Compute/galleries/Azure_Workshops_Images/images/Azure_Workshop_AzureExtensions_Image/versions/1.0.0" `
+    --size $controllerVmSize `
+    --admin-username $vmusername  `
+    --os-disk-size-gb 100 `
+    --nsg-rule SSH `
+    --ssh-key-value "../../environment/shared/keys/appd-azure-cloud-kickstart.pub" `
+    --output none
+
+    $extensionIpAddress = az vm show -d -g $resourceGroup -n  $extensionVmName --query publicIps -o tsv
+
+    Write-Host ("Extension VM created at IP $extensionIpAddress") -ForegroundColor Green
+
+    #Create launchpad VM
+    
+    $launchpadVmName="appd-launchpad"
+
+    az vm create `
+        --resource-group $resourceGroup `
+        --name  $launchpadVmName `
+        --image "/subscriptions/$subscriptionId/resourceGroups/workshop-resources/providers/Microsoft.Compute/galleries/Azure_Workshops_Images/images/Azure_Workshop_LaunchPad_Image/versions/1.0.0"  `
+        --size $launchpadVMSize `
+        --admin-username $vmusername  `
+        --admin-password $sharedPassword `
+        --nsg-rule RDP `
+        --output none
+
+    #Get the Launchpad VM Public IP Address
+    $launchpadIpAddress = az vm show -d -g $resourceGroup -n  $launchpadVmName --query publicIps -o tsv
+
+    Write-Host ("LaunchPad VM created at IP $launchpadIpAddress") -ForegroundColor Green
+
     #Create Service Principal for use by the extension with a scope limited to the user's resource group
     $appName = "appd_sp_$($attendee.FirstName)_$($attendee.LastName)".ToLower()
     $scope = "/subscriptions/$subscriptionId/resourceGroups/$resourceGroup"
     $servicePrincipal = az ad sp create-for-rbac -n $appName --role Reader --scopes $scope
+    $clientName = $servicePrincipal.name
+    $clientSecret = $servicePrincipal.clientSecret
 
     Write-Host ("Service Principal Created") -ForegroundColor Green
 
     $attendeeConfig = @{
+        SubscriptionId = $subscriptionId
         AzureResourceGroup = $resourceGroup
         Region = $($attendee.Region)
         DotnetAgentVMPassword = $sharedPassword
         DotnetAgentVMUsername = $vmusername
+        servicePrincipal = $clientName 
+        clientSecret = $clientSecret 
         } | ConvertTo-Json | Out-File "./attendee-files/config_$($attendee.Firstname)_$($attendee.Lastname).json"
 
     $attendeeWelcome = @"
 
-    @"
         Hello $($attendee.FirstName),
 
-        We are looking forward to you joining us on our upcoming AppDynamics Cloud Clickstart for Azure.  The following are some details  
-        that you will need for the workshop. You can find additional instructions for workshop at $githubRepoUrl.
+        We are looking forward to you joining us on our upcoming AppDynamics Cloud Kickstart for Azure.  The following are some details that you will need for the workshop. You can find additional instructions for the workshop at $githubRepoUrl.
 
-        Please note the following details you will require for the workshop:
+        Please note the following details about your workshop environment:
 
+        Azure Subscription ID: $($subscriptionId)
         Azure Region: $($attendee.Region)
         Azure Resource Group: $resourceGroup
 
@@ -149,16 +191,22 @@ foreach($attendee in $attendees) {
         Username: $userPrincipal
         Password: $sharedPassword
 
-        Controller Details:
+        Controller VM Details:
         Url: http://$($controllerIpAddress):8090
         Username: admin
         Password: $controllerPassword
-        SSH: Enabled (see attached PEM file)
-        
-        Dotnet Agent Login Details:
-        IP Address: Available after provisioning in the lab
+        ** Use Attached Key File (appd-azure-cloud-kickstart.pem) for SSH Access
+
+        Launchpad VM Details (Preconfigured Windows 10 Workshop Lab Environment):
+        IP Address: $launchpadIpAddress
         username: $vmusername
         password: $sharedPassword
+        (access the VM over RDP with the above credentials)
+
+        Azure Extension Login Details:
+        IP Address: $extensionIpAddress
+        username: $vmusername
+        ** Use Attached Key File (appd-azure-cloud-kickstart.pem) for SSH Access
 
         Service Principal for use with AppDynamics Extensions:
         $servicePrincipal 
@@ -166,11 +214,13 @@ foreach($attendee in $attendees) {
         Subscription ID (used with extensions): 
         $subscriptionId
 
-    Additional details for validating your account and and workshop prereqs can be found at $githubRepoUrl.
+    Additional details for validating your account and and workshop prerequisites can be found at $githubRepoUrl.
      
 "@ | Out-File "./attendee-files/config_$($attendee.Firstname)_$($attendee.Lastname).txt"
 
     Write-Host ("Attendee Configuration Written (config_$($attendee.Firstname)_$($attendee.Lastname).json)") -ForegroundColor Green
     Write-Host ("Attendee Configuration Written (config_$($attendee.Firstname)_$($attendee.Lastname).txt)") -ForegroundColor Green
 }
+
+
 
